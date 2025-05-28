@@ -3,8 +3,23 @@ import AddTask from "./components/AddTask";
 import Tasks from "./components/Tasks";
 
 function App() {
-  const [tasks, setTasks] = useState(JSON.parse(localStorage.getItem("tasks")));
+  //const [tasks, setTasks] = useState(JSON.parse(localStorage.getItem("tasks")));
+  const [tasks, setTasks] = useState(() => {
+    const storedTasks = localStorage.getItem("tasks");
 
+    if (storedTasks) {
+      try {
+        const parsedTasks = JSON.parse(storedTasks);
+
+        return Array.isArray(parsedTasks) ? parsedTasks : [];
+      } catch (e) {
+        console.log("Erro ao fazer parse das tarefas do localStorage:", e);
+        return [];
+      }
+    }
+
+    return [];
+  });
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
